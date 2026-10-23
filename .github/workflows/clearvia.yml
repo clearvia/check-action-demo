@@ -1,0 +1,25 @@
+name: Clearvia
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # the OIDC token Clearvia verifies
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - uses: clearvia/check-action@v1
+        id: clearvia
+        with:
+          organization: jenphyms-org
+          project: m2d-check
+          api-url: https://api-staging.clearvia.app
+          fail-below-level: "false"
+      - run: echo "Uploaded ${{ steps.clearvia.outputs.run-url }}"
